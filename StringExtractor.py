@@ -225,17 +225,33 @@ def create_str_recent(slug,time):
                         player2ID = set["entrant2Id"]
                         player1 = entrant_dict[player1ID]
                         player2 = entrant_dict[player2ID]
-                        if type(player1Score) == int and type(player2Score)== int:
-                            if player1Score > -1 and player2Score > -1:
-                                str_set = '{} v.s. {}({}-{}), '.format(player1,player2,player1Score,player2Score)
-                        else:
-                            winnerID = entrant_dict[set["winnerId"]]
-                            loserID = entrant_dict[set["loserId"]]
-                            if winnerID == player1ID:
-                                str_set = '{} v.s. {}(W-L), '.format(player1,player2)
+                        regular = ''
+                        gf = ''
+                        if set["isGF"]:
+                            if type(player1Score) == int and type(player2Score)== int:
+                                if player1Score > -1 and player2Score > -1:
+                                    str_set = '{} v.s. {}({}-{}), '.format(player1,player2,player1Score,player2Score)
                             else:
-                                str_set = '{} v.s. {}(L-W), '.format(player1,player2)
-                        final += str_set
+                                winnerID = entrant_dict[set["winnerId"]]
+                                loserID = entrant_dict[set["loserId"]]
+                                if winnerID == player1ID:
+                                    str_set = '{} v.s. {}(W-L), '.format(player1,player2)
+                                else:
+                                    str_set = '{} v.s. {}(L-W), '.format(player1,player2)
+                            gf += str_set                            
+                        else:
+                            if type(player1Score) == int and type(player2Score)== int:
+                                if player1Score > -1 and player2Score > -1:
+                                    str_set = '{} v.s. {}({}-{}), '.format(player1,player2,player1Score,player2Score)
+                            else:
+                                winnerID = entrant_dict[set["winnerId"]]
+                                loserID = entrant_dict[set["loserId"]]
+                                if winnerID == player1ID:
+                                    str_set = '{} v.s. {}(W-L), '.format(player1,player2)
+                                else:
+                                    str_set = '{} v.s. {}(L-W), '.format(player1,player2)
+                            regular += str_set
+                        final += regular + gf
         except KeyError as K:
             continue
     return(final)
