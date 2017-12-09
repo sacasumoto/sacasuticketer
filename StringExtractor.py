@@ -34,102 +34,56 @@ Thanks to Andrew Nestico
 
 '''Smash.GG Code'''
 
+
+"https://api.smash.gg/tournament/weds-night-fights-2017-spring-season-2-4?expand[0]=event"
+
+
+tournament_events_url = "https://api.smash.gg/tournament/%s?expand[0]=event"
+event_url = "https://api.smash.gg/tournament/%s/event/%s?expand[0]=groups&expand[1]=phase"
+phase_url = "http://api.smash.gg/phase_group/%s?expand[0]=sets&expand[1]=entrants"
+
+
+
+
 def get_tournament_slug_from_smashgg_urls(url):
     return(url.split("/")[4])
 
 
-def get_tournament_info(slug):
+def get_tournament_event_slugs(slug):
+    tournament_data = requests.get(tournament_events_url % slug,
+                                   verify="cacert.pem").json()
+    event_slugs = []
+    event_dict = {}
+    for event in tournament_data["entities"]["event"]:
+##        event_slugs.append(event["slug"].split("/")[-1])
+        event_dict[event["name"]] = event["slug"].split("/")[-1]
+    return(event_dict)
+
+def get_tournament_timezone(slug):
     tournament_url = "https://api.smash.gg/tournament/" + slug
     t = requests.get(tournament_url, verify='cacert.pem')
-    tournament_data = t.json()
-    tournament_name = tournament_data["entities"]["tournament"]["name"]
-    
+    tournament_data = t.json()    
     timezone = tournament_data["entities"]["tournament"]["timezone"]
-    if timezone != True:
-        timezone = 'America/Los_Angeles'
-        
+    return(timezone)
 
-    # Scrape event page in case event ends earlier than tournament
-##    if slug == 'the-road-to-genesis':
-    if 'weds-night-fights' in slug:
-        event_url = "https://api.smash.gg/tournament/" + slug + "/event/" + "smash-melee"
-    elif 'training-mode-tuesdays-13' == slug:
-        event_url = "https://api.smash.gg/tournament/" + slug + "/event/" + "tmt-top-8"
-    else:
-        event_url = "https://api.smash.gg/tournament/" + slug + "/event/" + "melee-singles"
-    try:
-        e = requests.get(event_url, verify='cacert.pem')
-        event_data = e.json()
-        event_id = event_data["entities"]["event"]["id"]
-    except:
-        event_url = "https://api.smash.gg/tournament/" + slug + "/event/" + "melee-singles"
-        e = requests.get(event_url, verify='cacert.pem')
-        event_data = e.json()
-        event_id = event_data["entities"]["event"]["id"]
+# L = ["melee-singles","smash-melee",tmt-top-8"]
 
-    timestamp = event_data["entities"]["event"]["endAt"]
-    if not timestamp:
-        timestamp = tournament_data["entities"]["tournament"]["endAt"]
-    # Get local date
-    date = datetime.fromtimestamp(timestamp, pytz.timezone(timezone)).date()
-    date = str(date)
 
-    ## Get standings
-    if 'training-mode-tuesdays' in slug:
-        attendee_url = 'https://api.smash.gg/tournament/'+slug+'/attendees?filter=%7B"eventIds"%3A'+str(event_id)+'%7D'
-        a_data = requests.get(attendee_url, verify='cacert.pem').json()
-        count = a_data["total_count"]
-    else:
-        try:
-            standing_string = "/standings?expand[]=attendee&per_page=100"
-            standing_url = event_url + standing_string
-            s = requests.get(standing_url,verify='cacert.pem')
-            s_data = s.json()
-            count = s_data["total_count"]
-        except:
-            attendee_url = 'https://api.smash.gg/tournament/'+slug+'/attendees?filter=%7B"eventIds"%3A'+str(event_id)+'%7D'
-            a_data = requests.get(attendee_url, verify='cacert.pem').json()
-            count = a_data["total_count"]
-    return([tournament_name,event_id,count,str(date)])
+
     
-def create_smashgg_api_urls(slug):
-    """from master url creates list of api urls for pools and bracket"""
-
-    if 'weds-night-fights' in slug:
-        url = "https://api.smash.gg/tournament/" + slug + "/event/smash-melee?expand[0]=groups&expand[1]=phase"
-    elif 'training-mode-tuesdays-13' == slug:
-        url = "https://api.smash.gg/tournament/" + slug + "/event/tmt-top-8?expand[0]=groups&expand[1]=phase"
-    else:
-        url = 'http://api.smash.gg/tournament/' + slug + '/event/melee-singles?expand[0]=groups&expand[1]=phase'
-    try:
-        data = requests.get(url,verify='cacert.pem').json()
-        groups = data["entities"]["groups"]
-    except:
-        url = 'http://api.smash.gg/tournament/' + slug + '/event/melee-singles?expand[0]=groups&expand[1]=phase'
-        data = requests.get(url,verify='cacert.pem').json()
-        groups = data["entities"]["groups"]
-        
+def create_smashgg_api_urls(slug, event_slug):
     urlList = []
-    for i in range(len(groups)):
-        iD = str(groups[i]["id"])
-        urlList.append("http://api.smash.gg/phase_group/" + iD + "?expand[0]=sets&expand[1]=entrants")
-
-    if 'red-bull-smash-gods-and-gatekeepers-2' in slug:
-        url = "https://api.smash.gg/tournament/" + slug + "/event/forsaken-bracket?expand[0]=groups&expand[1]=phase"
-        data = requests.get(url,verify='cacert.pem').json()
-        groups = data["entities"]["groups"]
-        for i in range(len(groups)):
-            iD = str(groups[i]["id"])
-            urlList.append("http://api.smash.gg/phase_group/" + iD + "?expand[0]=sets&expand[1]=entrants")
-
+    data = requests.get(event_url % (slug, event_slug), verify="cacert.pem").json()
+    groups = data["entities"]["groups"]
+    for phase in range(len(groups)):
+        ID = str(groups[phase]["id"])
+        urlList.append(phase_url % ID)
     return(urlList)
 
 def get_tournament_timezone(slug):
     tournament_url = "https://api.smash.gg/tournament/" + slug
     t = requests.get(tournament_url, verify='cacert.pem')
-    tournament_data = t.json()
-    tournament_name = tournament_data["entities"]["tournament"]["name"]
-    
+    tournament_data = t.json()    
     timezone = tournament_data["entities"]["tournament"]["timezone"]
     return(timezone)
 
@@ -156,9 +110,9 @@ or 'null'
 '''
 
 
-def create_str_upcoming(slug):
+def create_str_upcoming(slug, event_slug):
     final = ''
-    urlList = create_smashgg_api_urls(slug)
+    urlList = create_smashgg_api_urls(slug, event_slug)
     for url in urlList:
         try:
             data = requests.get(url,verify='cacert.pem').json()
@@ -178,9 +132,9 @@ def create_str_upcoming(slug):
             continue
     return(final)
 
-def create_str_ongoing(slug):
+def create_str_ongoing(slug, event_slug):
     final = ''
-    urlList = create_smashgg_api_urls(slug)
+    urlList = create_smashgg_api_urls(slug, event_slug)
     for url in urlList:
         try:
             data = requests.get(url,verify='cacert.pem').json()
@@ -201,10 +155,10 @@ def create_str_ongoing(slug):
     return(final)
 
 #time in seconds
-def create_str_recent(slug,time):
+def create_str_recent(slug, event_slug, time):
     final = ''
-    urlList = create_smashgg_api_urls(slug)
-    tz = requests.get("https://api.smash.gg/tournament/"+slug,verify='cacert.pem').json()['entities']['tournament']['timezone']
+    urlList = create_smashgg_api_urls(slug, event_slug)
+    tz = get_tournament_timezone(slug)
     currentTime = int(datetime.now(pytz.timezone(tz)).timestamp())
     for url in urlList:
         try:
