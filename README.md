@@ -6,8 +6,8 @@ Smash.gg parser and text editor for use in OBS
 # On OBS
 * Add a Text Source
 * Properties > Read from file
-* Choose recent.txt
+* Choose one of the corresponding .txt files.
 * Right click on the text source name > Filters
 * Add > Scroll, choose a constant width for the scroll size
 ## Future
-* Add Ongoing and Upcoming functionality
+* Compatibility with doubles.
