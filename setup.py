@@ -22,8 +22,8 @@ cx_Freeze.setup(
                                              "recent.txt",
                                              "cacert.pem",
                                              "ngcc.ico"]}},
-    version = "0.01",
-    description = "Smash.gg parser to get recent results in a txt file for OBS",
+    version = "0.02",
+    description = "Smash.gg parser to get sets in a txt file for OBS",
     executables = executables
     )
     
