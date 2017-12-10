@@ -227,15 +227,21 @@ class PageOne(tk.Frame,Main):
         self.invoked = now
 
     def stop_button(self):
-        self.after_cancel(self.update_after)
-        self.timer.configure(text="Stopping..")
-        self.after(1000, self.timer.configure(text="Press Start"))
-
+        if self.update_after != None:
+            self.after_cancel(self.update_after)
+            self.timer.configure(text="Stopping..")
+            self.after(1000, self.timer.configure(text="Press Start"))
+        else:
+            self.timer.configure(text="Press Start")
 
     def go_back_button(self):
-        self.after_cancel(self.update_after)
-        self.controller.show_frame(PageFour)
-        self.after(1000, self.timer.configure(text="Press Start"))
+        if self.update_after != None:
+            self.after_cancel(self.update_after)
+            self.controller.show_frame(PageFour)
+            self.after(1000, self.timer.configure(text="Press Start"))
+        else:
+            self.controller.show_frame(PageFour)
+            self.timer.configure(text="Press Start")
 
 
 #recent_txt(url,time) time = how many seconds threshold for match results to be counted.
@@ -309,14 +315,21 @@ class PageTwo(tk.Frame,Main):
         self.invoked = now
 
     def stop_button(self):
-        self.after_cancel(self.update_after)
-        self.timer.configure(text="Stopping..")
-        self.after(1000, self.timer.configure(text="Press Start"))
+        if self.update_after != None:
+            self.after_cancel(self.update_after)
+            self.timer.configure(text="Stopping..")
+            self.after(1000, self.timer.configure(text="Press Start"))
+        else:
+            self.timer.configure(text="Press Start")
 
     def go_back_button(self):
-        self.after_cancel(self.update_after)
-        self.controller.show_frame(PageFour)
-        self.after(1000, self.timer.configure(text="Press Start"))
+        if self.update_after != None:
+            self.after_cancel(self.update_after)
+            self.controller.show_frame(PageFour)
+            self.after(1000, self.timer.configure(text="Press Start"))
+        else:
+            self.controller.show_frame(PageFour)
+            self.timer.configure(text="Press Start")
 
 
 #recent_txt(url,time) time = how many seconds threshold for match results to be counted.
@@ -391,14 +404,21 @@ class PageThree(tk.Frame,Main):
         self.invoked = now
 
     def stop_button(self):
-        self.after_cancel(self.update_after)
-        self.timer.configure(text="Stopping..")
-        self.after(1000, self.timer.configure(text="Press Start"))
+        if self.update_after != None:
+            self.after_cancel(self.update_after)
+            self.timer.configure(text="Stopping..")
+            self.after(1000, self.timer.configure(text="Press Start"))
+        else:
+            self.timer.configure(text="Press Start")
 
     def go_back_button(self):
-        self.after_cancel(self.update_after)
-        self.controller.show_frame(PageFour)
-        self.after(1000, self.timer.configure(text="Press Start"))
+        if self.update_after != None:
+            self.after_cancel(self.update_after)
+            self.controller.show_frame(PageFour)
+            self.after(1000, self.timer.configure(text="Press Start"))
+        else:
+            self.controller.show_frame(PageFour)
+            self.timer.configure(text="Press Start")
 
 #recent_txt(url,time) time = how many seconds threshold for match results to be counted.
 #timeleft = how many seconds between updates.
