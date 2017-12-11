@@ -238,7 +238,7 @@ class PageOne(tk.Frame,Main):
         if self.update_after != None:
             self.after_cancel(self.update_after)
             self.controller.show_frame(PageFour)
-            self.after(1000, self.timer.configure(text="Press Start"))
+            self.timer.configure(text="Press Start")
         else:
             self.controller.show_frame(PageFour)
             self.timer.configure(text="Press Start")
@@ -326,7 +326,7 @@ class PageTwo(tk.Frame,Main):
         if self.update_after != None:
             self.after_cancel(self.update_after)
             self.controller.show_frame(PageFour)
-            self.after(1000, self.timer.configure(text="Press Start"))
+            self.timer.configure(text="Press Start")
         else:
             self.controller.show_frame(PageFour)
             self.timer.configure(text="Press Start")
@@ -415,7 +415,7 @@ class PageThree(tk.Frame,Main):
         if self.update_after != None:
             self.after_cancel(self.update_after)
             self.controller.show_frame(PageFour)
-            self.after(1000, self.timer.configure(text="Press Start"))
+            self.timer.configure(text="Press Start")
         else:
             self.controller.show_frame(PageFour)
             self.timer.configure(text="Press Start")
